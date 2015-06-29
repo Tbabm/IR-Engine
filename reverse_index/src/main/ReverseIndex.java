@@ -52,11 +52,27 @@ public class ReverseIndex {
 		//构造倒排记录表
 		LinkedList<PostingItem> riVector = getRiVector(itemDocPairs);
 		
-		//输出倒排记录表
-		//use foreach to save time!
+//      =======================method 1=========================
+		//正常输出倒排记录表
+		riOutput.println(docNum);
+		riOutput.println(riVector.size());
 		for(PostingItem p : riVector){
 			riOutput.println(p);
 		}
+		
+//		=======================method 2=========================
+		//使用VB编码压缩后再输出
+		VBCode.EncodeAndOutput(riVector);
+		
+		LinkedList<index.PostingList> tempVector = VBCode.InputAndDecode();
+		
+//		System.out.println(docNum);
+//		System.out.println(tempVector.size());
+//		for(index.PostingList p : tempVector){
+//			System.out.println(p);
+//		}
+
+//		=======================end=========================
 		
 		input.close();
 		sortedOutput.close();	

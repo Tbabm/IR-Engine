@@ -51,14 +51,15 @@ public class PostingItem{
 		temp.append(item);
 		temp.append(" ");
 		//调用get函数，保证idf被计算
-		temp.append(getIdf());
-		temp.append(" ");
+		//temp.append(getIdf());
+		//temp.append(" ");
 		temp.append(records.size());
 		for(Record r:records){
 			temp.append(" ");
 			temp.append(r.getDocID());
 			temp.append(" ");
-			temp.append(r.getLogTf());
+			//temp.append(r.getLogTf());
+			temp.append(r.getTf());
 		}
 		return temp.toString();
 	}
