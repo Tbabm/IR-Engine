@@ -8,8 +8,8 @@ import java.util.Scanner;
 
 //this version save idf & logtf in files
 public class ReverseIndex {
-	private static int docNum;
-	private static int elementNum;
+	public static int docNum;
+	public static int elementNum;
 	
 	public static void main(String[] args) throws Exception{
 		Scanner input = new Scanner(new File("item_docs.txt"));
@@ -55,8 +55,6 @@ public class ReverseIndex {
 		//输出倒排记录表
 		//use foreach to save time!
 		for(PostingItem p : riVector){
-			//传入docNum来计算idf
-			p.calIdf(docNum);
 			riOutput.println(p);
 		}
 		
@@ -103,150 +101,4 @@ public class ReverseIndex {
 		return riVector;
 	}
 	
-}
-
-class Pair implements Comparable<Object>{
-	private String item;
-	private int docID;
-	
-	public Pair(String item,int docID){
-		this.item = item;
-		this.docID = docID;
-	}
-
-	public String getItem() {
-		return item;
-	}
-
-	public void setItem(String item) {
-		this.item = item;
-	}
-
-	public int getDocID() {
-		return docID;
-	}
-
-	public void setDocID(int docID) {
-		this.docID = docID;
-	}	
-	
-	//for debug
-	public String toString(){
-		String temp = this.item+" "+this.docID;
-		return temp;
-	}
-
-	@Override
-	public int compareTo(Object o) {
-		// TODO Auto-generated method stub
-		Pair temp = (Pair)o;
-		int itemResult = this.item.compareTo(temp.getItem());
-		if(itemResult > 0){
-			return 1;
-		}
-		else if(itemResult == 0){
-			return this.docID-temp.docID;
-		}
-		else{
-			return -1;
-		}
-	}
-}
-
-class PostingItem{
-	private String item;
-	private int cf;
-	private double idf;
-	public LinkedList<Record> records;
-	
-	public PostingItem(String item){
-		this.item = item;
-		this.cf = 0;
-		this.idf = 0;
-		this.records = new LinkedList<Record>();
-	}
-	
-	public String getItem() {
-		return item;
-	}
-	
-	public void setItem(String item) {
-		this.item = item;
-	}
-	
-	public int getDf() {
-		return records.size();
-	}
-	
-	public void calIdf(int docNum){
-		this.idf = Math.log10(docNum/getDf());;
-	}
-	
-	public double getIdf() {
-		return idf; 
-	}
-
-	public int getCf() {
-		return cf;
-	}
-	
-	//每次扫描时调用该方法计算cf
-	public void increaseCf() {
-		this.cf += 1;
-	}
-	
-	public String toString(){
-		StringBuffer temp = new StringBuffer();
-		temp.append(item);
-		temp.append(" ");
-		temp.append(idf);
-		temp.append(" ");
-		temp.append(records.size());
-		for(Record r:records){
-			temp.append(" ");
-			temp.append(r.getDocID());
-			temp.append(" ");
-			temp.append(r.getLogTf());
-		}
-		return temp.toString();
-	}
-	
-}
-
-class Record {
-	private int docID;
-	private int tf;
-	private double logTf;
-	
-	public Record(Pair pair){
-		this.docID = pair.getDocID();
-		this.tf = 1;
-		this.logTf = 0;
-	}
-
-	public int getDocID() {
-		return docID;
-	}
-
-	public void setDocID(int docID) {
-		this.docID = docID;
-	}
-
-	public int getTf() {
-		return tf;
-	}
-
-	public void increaseTf() {
-		this.tf+=1;
-	}
-
-	public double getLogTf() {
-		//在需要的时候计算
-		this.calLogTf();
-		return logTf;
-	}
-
-	public void calLogTf() {
-		this.logTf = Math.log10(this.tf)+1;
-	}
 }
