@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Scanner;
 
+//this version save idf & logtf in files
 public class ReverseIndex {
 	private static int docNum;
 	private static int elementNum;
