@@ -33,20 +33,8 @@ public class VBCode {
 		}
 		PrintWriter docOutput = new PrintWriter(docFile);
 		
-		File debugFile = new File("debugFile");
-		if(debugFile.exists()){
-			if(debugFile.delete())
-				System.out.println("Create a new file for debug");
-			else{
-				System.out.println("Debug file already exists");
-			}
-		}
-		PrintWriter debugOutput = new PrintWriter(debugFile);
-		
 		//每次重新使用需要clear
 		//for debug
-//		debugOutput.println(ReverseIndex.docNum);
-//		debugOutput.println(riVector.size());
 		
 		indexOutput.writeInt(ReverseIndex.docNum);
 		indexOutput.writeInt(riVector.size());
@@ -54,8 +42,6 @@ public class VBCode {
 //			indexOutput.writeUTF(p.getItem());
 			docOutput.println(p.getItem());
 			indexOutput.writeInt(p.getDf());
-//			debugOutput.print(p.getDf());
-//			debugOutput.print(" ");
 			
 			int i = 0;
 			int tempDocID = 0;
@@ -76,7 +62,6 @@ public class VBCode {
 			}
 		}
 		
-		debugOutput.close();
 		docOutput.close();
 		indexOutput.close();
 	}
