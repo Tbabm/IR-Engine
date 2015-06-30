@@ -1,4 +1,4 @@
-﻿package Index;
+package index;
 
 public class Record {
 	private int docID;
@@ -20,6 +20,7 @@ public class Record {
 	public int getDocID() {
 		return docID;
 	}
+
 	public void setDocID(int docID) {
 		this.docID = docID;
 	}
@@ -37,5 +38,10 @@ public class Record {
 	private void calLogTf() {
 		this.logTf = Math.log10(this.tf)+1;
 	}
-		
+
+	@Override
+	public boolean equals(Object o){
+		return docID == ((Record)o).docID;
+	}
+
 }

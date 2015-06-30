@@ -1,3 +1,6 @@
+package Search;
+import run.IR_system;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;

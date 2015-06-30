@@ -1,8 +1,11 @@
-import Index.BPlusTree;
-import Index.Node;
-import Index.PostingList;
-import Index.ReverseIndex;
+package run;
+import Search.BoolSearch;
+import Search.SpellCorrect;
 import Search.VectorSearch;
+import index.BPlusTree;
+import index.Node;
+import index.PostingList;
+import index.ReverseIndex;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -27,21 +30,14 @@ public class IR_system {
      */
     public static void main(String []args) throws Exception{
     	//建立词干还原树
-    	rawStemTree = cstTree("Raw_Stemmed_Dic"); 
+    	rawStemTree = cstTree("Raw_Stemmed_Dic");
         //读取命令，进行相应
-    	//try    	{
-	        IR_system getcommand = new IR_system();
-	        String cmd;
-	        while(!(cmd=in.nextLine()).equalsIgnoreCase("quit"))
-	            getcommand.do_operation(getcommand.parse(cmd));
-    	//}
-    	//catch(Exception ex)	{
-    		//....
-    	//	System.out.println("error: " + ex.getMessage());
-    	//}
-    	//finally{
-    		in.close();
-    	//}
+        IR_system getcommand = new IR_system();
+        String cmd;
+        while(!(cmd=in.nextLine()).equalsIgnoreCase("quit"))
+            getcommand.do_operation(getcommand.parse(cmd));
+
+		in.close();
     }
 
     /**
@@ -55,6 +51,17 @@ public class IR_system {
         int k = cmd.indexOf(' ');
         String op = cmd.substring(0, k==-1?cmd.length():k);
         if(op.equalsIgnoreCase("search")) {
+            int begin = cmd.indexOf('\"');
+            int end = cmd.lastIndexOf('\"');
+            if(begin == -1 || begin == end)
+                System.out.println("You might loss \" in your search!");
+            else {
+                search_words = cmd.substring(cmd.indexOf('\"') + 1, cmd.lastIndexOf('\"'));
+                //System.out.println(search_words);
+            }
+            return 2;
+        }
+        else if(op.equalsIgnoreCase("search_bool")){
             int begin = cmd.indexOf('\"');
             int end = cmd.lastIndexOf('\"');
             if(begin == -1 || begin == end)
@@ -79,22 +86,55 @@ public class IR_system {
      * @param cmd 解析后的命令
      */
     public void do_operation(int cmd) throws Exception{
-        switch(cmd){
-            case 0:
-                ReverseIndex.read();
-                break;
-            case 1:
-                List<Integer> re = VectorSearch.getResult(toStemArray(search_words));
-                System.out.println("Result (docID):");
-                for(int i: re)
-                    System.out.println(i);
-                break;
-        }
+    	try    	{
+	        switch(cmd){
+	            case 0:
+	                ReverseIndex.read();
+	                break;
+	            case 1:
+	                System.out.println(search_words);
+	                List<Integer> re_bool = new BoolSearch(search_words).getResult();
+	                System.out.println("Result (docID): --bool");
+	                if(re_bool == null) {
+	                    System.out.println("未找到结果 or 布尔查询格式错误");
+	                    return;
+	                }
+	                for(int i: re_bool)
+	                    System.out.println(i);
+	                break;
+	            case 2:
+	                System.out.println(search_words);
+	                List<Integer> re = VectorSearch.getResult(toStemArray(search_words));
+	                System.out.println("Result (docID):");
+	                for(int i: re)
+	                    System.out.println(i);
+	                break;
+	        }
+    	}
+    	catch(Exception ex)	{
+    		System.out.println("error: " + ex.getMessage());
+    	}
+    	finally{
+    		
+    	}
     }
-    
-    //将查询的search_words字符串词干还原，并以字符串数组形式输出
+
+    /**
+     * 将查询的search_words字符串词干还原，并以字符串数组形式输出
+     * @param str
+     * @return
+     * @throws Exception
+     */
     public static String[] toStemArray(String str) throws Exception{
-    	String[] ret = str.toLowerCase().split(" ");
+        StringBuffer tmp = new StringBuffer(str);
+        for(int i = 0; i < tmp.length()-1; i++){
+            if(tmp.charAt(i) == ' ' && tmp.charAt(i+1) == ' ')
+                tmp.deleteCharAt(i);
+        }
+        if(tmp.charAt(tmp.length()-1) == ' ')
+            tmp.deleteCharAt(tmp.length()-1);
+        String sstr = tmp.toString();
+    	String[] ret = sstr.toLowerCase().split(" ");
     	for(int i = 0;i < ret.length;++i){
     		String spcorr = SpellCorrect.spellCorrect(ret[i]);
     		if(!spcorr.equals(ret[i])){

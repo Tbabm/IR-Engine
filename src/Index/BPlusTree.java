@@ -1,4 +1,4 @@
-package Index;
+package index;
 
 /**
  * B+树的建立
@@ -8,6 +8,7 @@ public class BPlusTree<T extends Comparable<T>, V>{
     private Node root;
     private Node<T,V> min;
     private int M;
+    private int Size;
 
     public BPlusTree(){
         this(Node.DEFAULT_M);
@@ -16,6 +17,11 @@ public class BPlusTree<T extends Comparable<T>, V>{
     public BPlusTree(int M){
         this.M = M;
         root = null;
+        Size = 0;
+    }
+
+    public int size(){
+        return Size;
     }
 
     /**
@@ -35,6 +41,7 @@ public class BPlusTree<T extends Comparable<T>, V>{
                 root.toLeaf((T)key.getKey()).insert(key);
         }
         root = root.Parent()==null?root:root.Parent();
+        Size++;
     }
 
     /**
@@ -52,6 +59,7 @@ public class BPlusTree<T extends Comparable<T>, V>{
      */
     public void remove(T key){
         root.toLeaf(key).remove(key);
+        Size--;
     }
 
     /**
@@ -77,10 +85,14 @@ public class BPlusTree<T extends Comparable<T>, V>{
      */
     public void printAll(){
         Node ptr = root.toLeaf(root.getkey());
+        System.out.println("Size: " + Size);
+        int sum = 0;
         while(ptr != null){
+            sum += ptr.size();
             ptr.printall();
             ptr = ptr.toNext();
         }
+        System.out.println("Size:"+sum);
     }
 
 //    /**

@@ -1,4 +1,4 @@
-package Index;
+package index;
 
 /**
  * B+树的节点
@@ -11,7 +11,7 @@ public class Node<T extends Comparable<T>, V> {
     private int M;
     private int elements;
 
-    public static final int DEFAULT_M = 8;
+    public static final int DEFAULT_M = 16;
 
     public Node(){
         this(DEFAULT_M);

@@ -1,4 +1,4 @@
-package Index;
+package index;
 
 /**
  * B+树的键值

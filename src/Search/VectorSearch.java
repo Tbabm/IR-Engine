@@ -1,8 +1,8 @@
 package Search;
 
-import Index.PostingList;
-import Index.Record;
-import Index.ReverseIndex;
+import index.PostingList;
+import index.Record;
+import index.ReverseIndex;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -66,7 +66,7 @@ public class VectorSearch {
     	while(iter.hasNext()) {
     		Map.Entry entry = (Map.Entry)iter.next();
     		Integer docID = (Integer) entry.getKey();
-    		Double w = (double) entry.getValue() / Math.sqrt(length_doc.get(docID));
+    		Double w = (Double) entry.getValue() / Math.sqrt(length_doc.get(docID));
     		ret_tmp.add(new Pair<Double,Integer>(w,docID));
     	}
     	//取前K个并返回,大的K个（Pair中以第一个元素比较，从大到小排序）
