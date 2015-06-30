@@ -19,9 +19,11 @@ import java.util.Scanner;
  */
 public class IR_system {
 
+	public final static String rawStemFileName = "material/Raw_Stemmed_Dic";
+	
 	private static String search_words = null;
-	public static BPlusTree<String, String> rawStemTree;
 	private static Scanner in = new Scanner(System.in);
+	public static BPlusTree<String, String> rawStemTree;
 
     /**
      * 主函数
@@ -30,7 +32,7 @@ public class IR_system {
      */
     public static void main(String []args) throws Exception{
     	//建立词干还原树
-    	rawStemTree = cstTree("Raw_Stemmed_Dic");
+    	rawStemTree = cstTree(rawStemFileName);
         //读取命令，进行相应
         IR_system getcommand = new IR_system();
         String cmd;

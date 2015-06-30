@@ -10,7 +10,7 @@ import java.util.Arrays;
 
 public class SpellCorrect {
 	
-	private final static String fileName = "Raw_Stemmed_Dic";
+//	private final static String fileName = "material/Raw_Stemmed_Dic";
 	
 	public static String spellCorrect(String word){
 		String lowerword = word.toLowerCase();
@@ -30,7 +30,7 @@ public class SpellCorrect {
 	
 	//����
 	private static String correct(String word) {
-        File file = new File(fileName);
+        File file = new File(IR_system.rawStemFileName);
         BufferedReader reader = null;
         String recommendStr = word;
         try {

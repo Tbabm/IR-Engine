@@ -10,7 +10,7 @@ import java.util.LinkedList;
 
 public class VBCode {
 	
-	public static String indexFileName = "vb_ri.index";
+	public final static String indexFileName = "material/vb_ri.index";
 
 	//读入文件，解析称相应的数据结构
 	public static LinkedList<PostingList> InputAndDecode() throws IOException{
