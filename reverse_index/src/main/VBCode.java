@@ -1,29 +1,62 @@
 package main;
 
-import index.*;
+import index.PostingList;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.LinkedList;
+import java.util.Scanner;
 
 public class VBCode {
 	
 	public static String indexFileName = "vb_ri.index";
+	public static String docFileName = "vb_doc.txt";
 	//压缩之后直接以字符流输出到文件中
 	public static void EncodeAndOutput(LinkedList<PostingItem> riVector) throws IOException{		
 		DataOutputStream indexOutput = new DataOutputStream(new BufferedOutputStream(
 													new FileOutputStream(indexFileName)));
 		
-		//每次重新使用需要clear		
+		File docFile = new File(docFileName);
+		if(docFile.exists()){
+			if(docFile.delete())
+				System.out.println("Create a new file for vb doc");
+			else{
+				System.out.println("Doc file already exists");
+			}
+		}
+		PrintWriter docOutput = new PrintWriter(docFile);
+		
+		File debugFile = new File("debugFile");
+		if(debugFile.exists()){
+			if(debugFile.delete())
+				System.out.println("Create a new file for debug");
+			else{
+				System.out.println("Debug file already exists");
+			}
+		}
+		PrintWriter debugOutput = new PrintWriter(debugFile);
+		
+		//每次重新使用需要clear
+		//for debug
+//		debugOutput.println(ReverseIndex.docNum);
+//		debugOutput.println(riVector.size());
+		
 		indexOutput.writeInt(ReverseIndex.docNum);
 		indexOutput.writeInt(riVector.size());
 		for(PostingItem p:riVector){
-			indexOutput.writeUTF(p.getItem());
+//			indexOutput.writeUTF(p.getItem());
+			docOutput.println(p.getItem());
 			indexOutput.writeInt(p.getDf());
+//			debugOutput.print(p.getDf());
+//			debugOutput.print(" ");
+			
 			int i = 0;
 			int tempDocID = 0;
 			//每一条记录
@@ -43,6 +76,8 @@ public class VBCode {
 			}
 		}
 		
+		debugOutput.close();
+		docOutput.close();
 		indexOutput.close();
 	}
 	
@@ -51,7 +86,8 @@ public class VBCode {
 		
 		while(true){
 			//先入的会被移到后面
-			byteStream.addFirst((byte)(i&0xFF));
+			//7F，而非FF
+			byteStream.addFirst((byte)(i&0x7F));
 			if(i < 128)
 				break;
 			i = i>>7;
@@ -70,14 +106,17 @@ public class VBCode {
 	public static LinkedList<PostingList> InputAndDecode() throws IOException{
 		LinkedList<PostingList> tempList = new LinkedList<PostingList>();
 		
+		Scanner docInput = new Scanner(new File(docFileName));
+		
 		DataInputStream indexInput = new DataInputStream(new BufferedInputStream(
 				new FileInputStream(indexFileName)));
 		
 		index.ReverseIndex.docNum = indexInput.readInt();
 		int listNum = indexInput.readInt();
 		
-		for(int i=0;i<listNum;i++){
-			PostingList tempPosting = new PostingList(indexInput.readUTF());
+		for(int i=0;i<listNum;i++){	
+			// PostingList tempPosting = new PostingList(indexInput.readUTF());
+			PostingList tempPosting = new PostingList(docInput.next());
 			int df = indexInput.readInt();
 			tempPosting.setDf(df);
 			
@@ -96,8 +135,9 @@ public class VBCode {
 			tempList.add(tempPosting);
 		}
 		
+		docInput.close();	
 		indexInput.close();
-		
+			
 		return tempList;
 	}
 	
