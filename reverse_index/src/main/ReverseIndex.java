@@ -25,16 +25,6 @@ public class ReverseIndex {
 		}
 		PrintWriter sortedOutput = new PrintWriter(sortedFile);
 		
-		File riFile = new File("ri.index");
-		if(riFile.exists()){
-			if(riFile.delete())
-				System.out.println("Create a new file for reverse index");
-			else{
-				System.out.println("RI file already exists");
-			}
-		}
-		PrintWriter riOutput = new PrintWriter(riFile);
-		
 		docNum = input.nextInt();
 		elementNum = input.nextInt();
 		
@@ -53,6 +43,16 @@ public class ReverseIndex {
 		LinkedList<PostingItem> riVector = getRiVector(itemDocPairs);
 		
 //      =======================method 1=========================
+		File riFile = new File("ri.index");
+		if(riFile.exists()){
+			if(riFile.delete())
+				System.out.println("Create a new file for reverse index");
+			else{
+				System.out.println("RI file already exists");
+			}
+		}
+		PrintWriter riOutput = new PrintWriter(riFile);
+		
 		//正常输出倒排记录表
 		riOutput.println(docNum);
 		riOutput.println(riVector.size());
@@ -60,23 +60,35 @@ public class ReverseIndex {
 			riOutput.println(p);
 		}
 		
+		riOutput.close();
 //		=======================method 2=========================
+		File vbFile = new File("vb_debug.index");
+		if(vbFile.exists()){
+			if(vbFile.delete())
+				System.out.println("Create a new file for vb debug");
+			else{
+				System.out.println("vb file already exists");
+			}
+		}
+		PrintWriter vbOutput = new PrintWriter(vbFile);
+		
 		//使用VB编码压缩后再输出
 		VBCode.EncodeAndOutput(riVector);
 		
 		LinkedList<index.PostingList> tempVector = VBCode.InputAndDecode();
 		
-//		System.out.println(docNum);
-//		System.out.println(tempVector.size());
-//		for(index.PostingList p : tempVector){
-//			System.out.println(p);
-//		}
+		vbOutput.println(docNum);
+		vbOutput.println(tempVector.size());
+		for(index.PostingList p : tempVector){
+			vbOutput.println(p);
+		}
+		
+		vbOutput.close();
 
 //		=======================end=========================
 		
 		input.close();
 		sortedOutput.close();	
-		riOutput.close();
 	}
 	
 	public static LinkedList<PostingItem> getRiVector(Pair[] itemDocPairs){
