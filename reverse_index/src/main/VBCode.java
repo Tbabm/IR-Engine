@@ -22,25 +22,22 @@ public class VBCode {
 	public static void EncodeAndOutput(LinkedList<PostingItem> riVector) throws IOException{		
 		DataOutputStream indexOutput = new DataOutputStream(new BufferedOutputStream(
 													new FileOutputStream(indexFileName)));
-		
-		File docFile = new File(docFileName);
-		if(docFile.exists()){
-			if(docFile.delete())
-				System.out.println("Create a new file for vb doc");
-			else{
-				System.out.println("Doc file already exists");
-			}
-		}
-		PrintWriter docOutput = new PrintWriter(docFile);
-		
-		//每次重新使用需要clear
-		//for debug
+		//方案2
+//		File docFile = new File(docFileName);
+//		if(docFile.exists()){
+//			if(docFile.delete())
+//				System.out.println("Create a new file for vb doc");
+//			else{
+//				System.out.println("Doc file already exists");
+//			}
+//		}
+//		PrintWriter docOutput = new PrintWriter(docFile);
 		
 		indexOutput.writeInt(ReverseIndex.docNum);
 		indexOutput.writeInt(riVector.size());
 		for(PostingItem p:riVector){
-//			indexOutput.writeUTF(p.getItem());
-			docOutput.println(p.getItem());
+			indexOutput.writeUTF(p.getItem());
+//			docOutput.println(p.getItem());
 			indexOutput.writeInt(p.getDf());
 			
 			int i = 0;
@@ -62,7 +59,7 @@ public class VBCode {
 			}
 		}
 		
-		docOutput.close();
+//		docOutput.close();
 		indexOutput.close();
 	}
 	
@@ -91,7 +88,7 @@ public class VBCode {
 	public static LinkedList<PostingList> InputAndDecode() throws IOException{
 		LinkedList<PostingList> tempList = new LinkedList<PostingList>();
 		
-		Scanner docInput = new Scanner(new File(docFileName));
+//		Scanner docInput = new Scanner(new File(docFileName));
 		
 		DataInputStream indexInput = new DataInputStream(new BufferedInputStream(
 				new FileInputStream(indexFileName)));
@@ -100,8 +97,8 @@ public class VBCode {
 		int listNum = indexInput.readInt();
 		
 		for(int i=0;i<listNum;i++){	
-			// PostingList tempPosting = new PostingList(indexInput.readUTF());
-			PostingList tempPosting = new PostingList(docInput.next());
+			PostingList tempPosting = new PostingList(indexInput.readUTF());
+//			PostingList tempPosting = new PostingList(docInput.next());
 			int df = indexInput.readInt();
 			tempPosting.setDf(df);
 			
@@ -120,7 +117,7 @@ public class VBCode {
 			tempList.add(tempPosting);
 		}
 		
-		docInput.close();	
+//		docInput.close();	
 		indexInput.close();
 			
 		return tempList;
